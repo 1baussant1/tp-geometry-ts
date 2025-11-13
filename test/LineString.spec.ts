@@ -1,52 +1,61 @@
 import "mocha";
 import { expect } from "chai";
 import Point from "../src/Point";
-import LineString from "../src/LineString.ts";
 
-describe("test LineString", () => {
+describe("Test Point", () => {
     it("test default constructor", () => {
-        const g = new LineString();
-        expect(g.getType()).to.equal("LineString");
-        expect(g.getNumPoints()).to.equal(0);
-        expect(g.isEmpty()).to.be.true;
-
+        const p = new Point();
+        expect(p.getCoordinate()).to.deep.equal([]);
+        expect(Number.isNaN(p.x())).to.be.true;
+        expect(Number.isNaN(p.y())).to.be.true;
+        expect(p.isEmpty()).to.be.true;
+        expect(p.getType()).to.equal("Point");
     });
 
-    it("test constructor with points", () => {
-        const a = new Point([0.0, 0.0]);
-        const b = new Point([3.0, 4.0]);
-        const g = new LineString([a, b]);
-        expect(g.isEmpty()).to.be.false;
-        expect(g.getNumPoints()).to.equal(2);
-        expect(g.getPointN(0)).to.equals(a);
-        expect(g.getPointN(1)).to.equals(b);
+    it("test constructor with coordinates", () => {
+        const p = new Point([3.0, 4.0]);
+        expect(p.isEmpty()).to.be.false;
+        expect(p.getCoordinate()).to.deep.equal([3.0, 4.0]);
+        expect(p.x()).to.equal(3.0);
+        expect(p.y()).to.equal(4.0);
     });
 
-    it("test should translate points", () => {
-        const g = new Point([3.0, 4.0]);
-        g.translate(1.0, 2.0);
-        expect(g.getCoordinate()).to.deep.equal([4.0, 6.0]);
+    it("translate() should move point correctly", () => {
+        const p = new Point([3.0, 4.0]);
+        p.translate(1.0, 2.0);
+        expect(p.getCoordinate()).to.deep.equal([4.0, 6.0]);
     });
 
-    it("should not modify empty point", () => {
-        const g = new Point();
-        g.translate(1.0, 2.0);
-        expect(g.isEmpty()).to.be.true
+    it("translate() should not modify empty point", () => {
+        const p = new Point();
+        p.translate(1.0, 2.0);
+        expect(p.isEmpty()).to.be.true;
+        expect(Number.isNaN(p.x())).to.be.true;
     });
 
-    it("should create a similar instance", () => {
+    it("clone() should create a similar but independent instance", () => {
         const p1 = new Point([2, 3]);
-        const p2 = p1.clone();
+        const p2 = p1.clone() as Point;
+
         expect(p2).to.not.equal(p1);
         expect(p2.getCoordinate()).to.deep.equal([2, 3]);
+
+        p2.translate(5, 0);
+        expect(p1.getCoordinate()).to.deep.equal([2, 3]);
+        expect(p2.getCoordinate()).to.deep.equal([7, 3]);
     });
 
-    it("copy should be independant", () => {
-        const p1 = new Point([1, 1]);
-        const p2 = p1.clone();
-        p2.translate(5, 5);
-        expect(p1.getCoordinate()).to.deep.equal([1, 1]);
-        expect(p2.getCoordinate()).to.deep.equal([6, 6]);
+    it("getEnvelope() should return a valid envelope", () => {
+        const p = new Point([5, 10]);
+        const env = p.getEnvelope();
+        expect(env.getBottomLeft()).to.deep.equal([5, 10]);
+        expect(env.getTopRight()).to.deep.equal([5, 10]);
+        expect(env.isEmpty()).to.be.false;
     });
 
+    it("getEnvelope() of an empty point should return an empty envelope", () => {
+        const p = new Point();
+        const env = p.getEnvelope();
+        expect(env.isEmpty()).to.be.true;
+    });
 });
