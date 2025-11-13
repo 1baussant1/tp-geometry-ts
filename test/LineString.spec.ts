@@ -10,12 +10,12 @@ describe ("test LineString", () =>{
         expect (g.getNumPoints()).to.equal(0);
 
     });
-    it ("test constructor with points", () =>{
+    it ("test constructor with points", () => {
         const a = new Point ([0.0,0.0]);
         const b = new Point ([3.0, 4.0]);
         const g = new LineString ([a,b]);
-        expect (g.getNumPoints()).to.equal("LineString");
-        expect (g.getPointN(0)).to.equal(a);
-        expect (g.getPointN(1)).to.equal(b);
+        expect (g.getNumPoints()).to.equal(2);
+        expect (g.getPointN(0)).to.equals(a);
+        expect (g.getPointN(1)).to.equals(b);
     })
 })

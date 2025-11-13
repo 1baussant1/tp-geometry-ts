@@ -9,7 +9,7 @@ export default class LineString implements Geometry {
 
     }
     getType(): string{
-        return "Linestring";
+        return "LineString";
         
     }
     getNumPoints(): number {
