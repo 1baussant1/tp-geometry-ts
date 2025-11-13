@@ -24,5 +24,11 @@ describe("test Point", () => {
         p.translate(1.0,2.0);
         expect(p.getCoordinate()).to.deep.equal([4.0,6.0]);
     });
+    it ("should not modify empty point", () =>{
+        const p = new Point();
+        p.translate(1.0,2.0);
+        expect (p.isEmpty()).to.be.true
+    });
 });
+    
 

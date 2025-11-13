@@ -24,6 +24,6 @@ export default class LineString implements Geometry {
         return this.points[n];
     }
     translate(dx: number, dy: number): void {
-        this.points.forEach(points=>points.translate(dx, dy));
+        this.points.forEach(point=>point.translate(dx, dy));
     }
 }

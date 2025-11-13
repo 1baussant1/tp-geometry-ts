@@ -19,5 +19,15 @@ describe ("test LineString", () =>{
         expect (g.getNumPoints()).to.equal(2);
         expect (g.getPointN(0)).to.equals(a);
         expect (g.getPointN(1)).to.equals(b);
-    })
+    });
+    it ("test should translate points", () =>{
+            const g = new Point ([3.0,4.0]);
+            g.translate(1.0,2.0);
+            expect(g.getCoordinate()).to.deep.equal([4.0,6.0]);
+    });
+    it ("should not modify empty point", () =>{
+            const g = new Point();
+            g.translate(1.0,2.0);
+            expect (g.isEmpty()).to.be.true
+    });
 })
