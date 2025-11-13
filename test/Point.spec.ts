@@ -43,7 +43,7 @@ describe("test Point", () => {
 
     it("copy should be independant", () => {
         const p1 = new Point([1, 1]);
-        const p2 = p1.clone() as Point;
+        const p2 = p1.clone();
 
         p2.translate(5, 5);
 

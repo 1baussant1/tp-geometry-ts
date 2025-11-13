@@ -36,18 +36,15 @@ describe("test LineString", () => {
 
     it("should create a similar instance", () => {
         const p1 = new Point([2, 3]);
-        const p2 = p1.clone() as Point;
-
+        const p2 = p1.clone();
         expect(p2).to.not.equal(p1);
         expect(p2.getCoordinate()).to.deep.equal([2, 3]);
     });
 
     it("copy should be independant", () => {
         const p1 = new Point([1, 1]);
-        const p2 = p1.clone() as Point;
-
+        const p2 = p1.clone();
         p2.translate(5, 5);
-
         expect(p1.getCoordinate()).to.deep.equal([1, 1]);
         expect(p2.getCoordinate()).to.deep.equal([6, 6]);
     });
