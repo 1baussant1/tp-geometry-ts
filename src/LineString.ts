@@ -19,11 +19,17 @@ export default class LineString implements Geometry {
     getNumPoints(): number {
         return this.points.length;
     }
-    
+
     getPointN(n: number): Point {
         return this.points[n];
     }
+
     translate(dx: number, dy: number): void {
-        this.points.forEach(point=>point.translate(dx, dy));
+        this.points.forEach(point => point.translate(dx, dy));
+    }
+
+    clone(): Geometry {
+        const copiedPoints = this.points.map(p => p.clone() as Point);
+        return new LineString(copiedPoints);
     }
 }
