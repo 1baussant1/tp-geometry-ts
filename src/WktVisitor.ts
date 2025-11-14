@@ -26,6 +26,9 @@ export default class WktVisitor implements GeometryVisitor {
             this.result = `LINESTRING(${parts.join(",")})`;
         }
     }
+    visitFake(f: any): void {
+        this.result = "FAKE GEOMETRY";
+    }
 
     getResult(): string {
         return this.result;

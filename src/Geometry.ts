@@ -6,4 +6,5 @@ export default interface Geometry {
     translate(dx: number, dy: number): void;
     clone(): Geometry;
     getEnvelope(): any;
+    accept(visitor: any): void;
 }
