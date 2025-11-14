@@ -2,34 +2,22 @@ import Geometry from "./Geometry";
 import Point from "./Point";
 import LineString from "./LineString";
 
+
 export default class WktWriter {
+
     write(geometry: Geometry): string {
         if (geometry instanceof Point) {
-            return this.writePoint(geometry);
-        } else if (geometry instanceof LineString) {
-            return this.writeLineString(geometry);
-        } else {
-            throw new TypeError("geometry type not supported");
+            if (geometry.isEmpty()) return "POINT EMPTY";
+            return `POINT(${geometry.getCoordinate().map(c => Number(c)).join(" ")})`;
         }
-    }
 
-    private writePoint(point: Point): string {
-        if (point.isEmpty()) {
-            return "POINT EMPTY";
+        if (geometry instanceof LineString) {
+            if (geometry.isEmpty()) return "LINESTRING EMPTY";
+            return `LINESTRING(${Array.from({length: geometry.getNumPoints()}, (_, i) =>
+                geometry.getPointN(i).getCoordinate().map(c => Number(c)).join(" ")
+            ).join(",")})`;
         }
-        const coord = point.getCoordinate();
-        return `POINT(${coord.map(c => Number(c).toString()).join(" ")})`;
-    }
 
-    private writeLineString(line: LineString): string {
-        if (line.isEmpty()) {
-            return "LINESTRING EMPTY";
-        }
-        const parts: string[] = [];
-        for (let i = 0; i < line.getNumPoints(); i++) {
-            const coord = line.getPointN(i).getCoordinate();
-            parts.push(coord.map(c => Number(c).toString()).join(" "));
-        }
-        return `LINESTRING(${parts.join(",")})`;
+        throw new TypeError("geometry type not supported");
     }
 }
