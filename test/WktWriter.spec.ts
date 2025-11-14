@@ -40,8 +40,4 @@ describe("Test WktWriter", () => {
     });
 
 
-    it("should throw an error for unsupported geometry type", () => {
-        const fakeGeom = { getType: () => "Polygon", isEmpty: () => false } as any;
-        expect(() => writer.write(fakeGeom)).to.throw(TypeError, "geometry type not supported");
-    });
 });

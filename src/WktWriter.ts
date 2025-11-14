@@ -18,20 +18,18 @@ export default class WktWriter {
             return "POINT EMPTY";
         }
         const coord = point.getCoordinate();
-        return `POINT(${coord.join(" ")})`;
+        return `POINT(${coord.map(c => Number(c).toString()).join(" ")})`;
     }
 
-    private writeLineString(line: LineString): string { 
+    private writeLineString(line: LineString): string {
         if (line.isEmpty()) {
             return "LINESTRING EMPTY";
         }
-
         const parts: string[] = [];
         for (let i = 0; i < line.getNumPoints(); i++) {
             const coord = line.getPointN(i).getCoordinate();
-            parts.push(coord.join(" "));
+            parts.push(coord.map(c => Number(c).toString()).join(" "));
         }
-
         return `LINESTRING(${parts.join(",")})`;
     }
 }

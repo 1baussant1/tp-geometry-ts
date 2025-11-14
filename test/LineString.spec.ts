@@ -1,6 +1,8 @@
 import "mocha";
 import { expect } from "chai";
 import Point from "../src/Point";
+import WktWriter from "../src/WktWriter";
+import LineString from "../src/LineString";
 
 describe("Test Point", () => {
     it("test default constructor", () => {
@@ -58,4 +60,92 @@ describe("Test Point", () => {
         const env = p.getEnvelope();
         expect(env.isEmpty()).to.be.true;
     });
+    
+    it("default constructor should create empty linestring", () => {
+        const ls = new LineString();
+        expect(ls.isEmpty()).to.be.true;
+        expect(ls.getNumPoints()).to.equal(0);
+        expect(ls.getType()).to.equal("LineString");
+    });
+
+    it("constructor with points should store them correctly", () => {
+        const p1 = new Point([0, 0]);
+        const p2 = new Point([1, 1]);
+        const ls = new LineString([p1, p2]);
+
+        expect(ls.isEmpty()).to.be.false;
+        expect(ls.getNumPoints()).to.equal(2);
+        expect(ls.getPointN(0).getCoordinate()).to.deep.equal([0, 0]);
+        expect(ls.getPointN(1).getCoordinate()).to.deep.equal([1, 1]);
+    });
+
+    it("translate() should move all points", () => {
+        const ls = new LineString([
+            new Point([0, 0]),
+            new Point([1, 1])
+        ]);
+
+        ls.translate(2, 3);
+
+        expect(ls.getPointN(0).getCoordinate()).to.deep.equal([2, 3]);
+        expect(ls.getPointN(1).getCoordinate()).to.deep.equal([3, 4]);
+    });
+
+    it("translate() on empty LineString should not crash", () => {
+        const ls = new LineString();
+        ls.translate(10, 10);
+        expect(ls.getNumPoints()).to.equal(0);
+    });
+
+    it("clone() should produce a deep copy", () => {
+        const ls = new LineString([
+            new Point([0, 0]),
+            new Point([1, 1])
+        ]);
+
+        const copy = ls.clone() as LineString;
+        expect(copy).to.not.equal(ls);
+        expect(copy.getNumPoints()).to.equal(2);
+        expect(copy.getPointN(0).getCoordinate()).to.deep.equal([0, 0]);
+        copy.getPointN(0).translate(100, 100);
+        expect(ls.getPointN(0).getCoordinate()).to.deep.equal([0, 0]);
+    });
+
+    it("getEnvelope should compute correct bbox", () => {
+        const ls = new LineString([
+            new Point([0, 1]),
+            new Point([2, -1]),
+            new Point([1, 3])
+        ]);
+
+        const env = ls.getEnvelope();
+        expect(env.getMinX()).to.equal(0);
+        expect(env.getMinY()).to.equal(-1);
+        expect(env.getMaxX()).to.equal(2);
+        expect(env.getMaxY()).to.equal(3);
+    });
+
+    it("getEnvelope() of empty LineString should be empty", () => {
+        const ls = new LineString();
+        const env = ls.getEnvelope();
+        expect(env.isEmpty()).to.be.true;
+    });
+
+    it("WKT writer should output LINESTRING EMPTY", () => {
+        const ls = new LineString();
+        const writer = new WktWriter();
+        expect(writer.write(ls)).to.equal("LINESTRING EMPTY");
+    });
+
+    it("WKT writer should output valid LINESTRING WKT", () => {
+        const ls = new LineString([
+            new Point([0, 0]),
+            new Point([1, 1]),
+            new Point([5, 5])
+        ]);
+
+        const writer = new WktWriter();
+        expect(writer.write(ls)).to.equal("LINESTRING(0 0,1 1,5 5)");
+    });
+
 });
